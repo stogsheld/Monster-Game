@@ -3,8 +3,7 @@ import java.util.Scanner;
 
 public class PlayGame {
 
-    public PlayGame(int floorLevel, String playerName, int playerHealth, int playerGold,
-                    int playerHealthPotions, int playerLevel, int playerExp) {
+    public PlayGame(int floorLevel, Stats player) {
         if (floorLevel == 1) {
             System.out.println("Get as far as you can!");
         } else {
@@ -12,36 +11,29 @@ public class PlayGame {
             System.out.println("You are on level " + floorLevel + ".");
             System.out.println("***************************************");
         }
-        chooseLevel(floorLevel, playerName, playerHealth, playerGold, playerHealthPotions, playerLevel, playerExp);
+        chooseLevel(floorLevel, player);
     }
 
-    private void chooseLevel(int floorLevel, String playerName, int playerHealth, int playerGold,
-                             int playerHealthPotions, int playerLevel, int playerExp) {
+    private void chooseLevel(int floorLevel, Stats player) {
         Random rand = new Random();
         int upperbound = 10;
         int playerLevelChooser = rand.nextInt(upperbound);
         if (playerLevelChooser < 5) {
-            playJungleLevel(floorLevel, 2, playerName, playerHealth, playerGold, playerHealthPotions,
-                    playerLevel, playerExp);
+            playJungleLevel(floorLevel, 2, player);
         } else {
-            playJungleLevel(floorLevel, 2, playerName, playerHealth, playerGold, playerHealthPotions,
-                    playerLevel, playerExp);
+            playJungleLevel(floorLevel, 2, player);
         }
     }
 
-    public void playJungleLevel(int floorLevel, int startingTile, String playerName, int playerHealth,
-                                int playerGold, int playerHealthPotions, int playerLevel, int playerExp) {
+    public void playJungleLevel(int floorLevel, int startingTile, Stats player) {
         int exitTile = setExitTile(startingTile);
-        navigateLevel(floorLevel, startingTile, exitTile, playerName, playerHealth, playerGold, playerHealthPotions,
-                playerLevel, playerExp);
+        navigateLevel(floorLevel, startingTile, exitTile, player);
     }
 
-    private void navigateLevel(int floorLevel, int currentPosition, int exitTile, String playerName, int playerHealth,
-                               int playerGold, int playerHealthPotions, int playerLevel, int playerExp) {
+    private void navigateLevel(int floorLevel, int currentPosition, int exitTile, Stats player) {
         if (currentPosition == exitTile) {
             displayMap(currentPosition);
-            runExitBattle(floorLevel, playerName, playerHealth, playerGold, playerHealthPotions,
-                    playerLevel, playerExp);
+            runExitBattle(floorLevel, player);
         } else {
             Scanner scn = new Scanner(System.in);
             System.out.println();
@@ -63,8 +55,7 @@ public class PlayGame {
                         break;
                     }
                     currentPosition = currentPosition + 4;
-                    generateEvent(floorLevel, currentPosition, exitTile, playerName, playerHealth, playerGold,
-                            playerHealthPotions, playerLevel, playerExp);
+                    generateEvent(floorLevel, currentPosition, exitTile, player);
                     break;
                 case "2":
                     if (currentPosition < 5) {
@@ -73,8 +64,7 @@ public class PlayGame {
                         break;
                     }
                     currentPosition = currentPosition - 4;
-                    generateEvent(floorLevel, currentPosition, exitTile, playerName, playerHealth, playerGold,
-                            playerHealthPotions, playerLevel, playerExp);
+                    generateEvent(floorLevel, currentPosition, exitTile, player);
                     break;
                 case "3":
                     if ((currentPosition - 1) % 4 == 0) {
@@ -83,8 +73,7 @@ public class PlayGame {
                         break;
                     }
                     currentPosition = currentPosition - 1;
-                    generateEvent(floorLevel, currentPosition, exitTile, playerName, playerHealth, playerGold,
-                            playerHealthPotions, playerLevel, playerExp);
+                    generateEvent(floorLevel, currentPosition, exitTile, player);
                     break;
                 case "4":
                     if (currentPosition % 4 == 0) {
@@ -93,15 +82,14 @@ public class PlayGame {
                         break;
                     }
                     currentPosition = currentPosition + 1;
-                    generateEvent(floorLevel, currentPosition, exitTile, playerName, playerHealth, playerGold,
-                            playerHealthPotions, playerLevel, playerExp);
+                    generateEvent(floorLevel, currentPosition, exitTile, player);
                     break;
                 case "5":
-                    if (playerHealthPotions > 0) {
-                        playerHealthPotions--;
-                        playerHealth += 25;
+                    if (player.getHealthPotions() > 0) {
+                        player.setHealthPotions(player.getHealthPotions() - 1);
+                        player.setHealth(player.getHealth() + 25);
                         System.out.println();
-                        System.out.println("Health restored! You now have " + playerHealth + "HP.");
+                        System.out.println("Health restored! You now have " + player.getHealth() + "HP.");
                     } else {
                         System.out.println("No potions available!");
                     }
@@ -111,82 +99,65 @@ public class PlayGame {
                     System.out.println("Invalid option, please try again.");
             }
         }
-        navigateLevel(floorLevel, currentPosition, exitTile, playerName, playerHealth, playerGold, playerHealthPotions,
-                playerLevel, playerExp);
+        navigateLevel(floorLevel, currentPosition, exitTile, player);
     }
 
-    private void generateEvent(int floorLevel, int currentPosition, int exitTile, String playerName, int playerHealth,
-                               int playerGold, int playerHealthPotions, int playerLevel, int playerExp) {
+    private void generateEvent(int floorLevel, int currentPosition, int exitTile, Stats player) {
         Random eventGenerator = new Random();
         int upperbound = 10;
         int eventGen = eventGenerator.nextInt(upperbound);
         if (eventGen < 6) {
-            easyFight(floorLevel, currentPosition, exitTile, playerName, playerHealth, playerGold,
-                    playerHealthPotions, playerLevel, playerExp);
+            easyFight(floorLevel, currentPosition, exitTile, player);
         } else if (eventGen < 8) {
-            harderFight(floorLevel, currentPosition, exitTile, playerName, playerHealth, playerGold,
-                    playerHealthPotions, playerLevel, playerExp);
+            harderFight(floorLevel, currentPosition, exitTile, player);
         } else if (eventGen < 9) {
-            lootRoom(floorLevel, currentPosition, exitTile, playerName, playerHealth, playerGold, playerHealthPotions,
-                    playerLevel, playerExp);
+            lootRoom(floorLevel, currentPosition, exitTile, player);
         } else {
-            shopkeeperRoom(floorLevel, currentPosition, exitTile, playerName, playerHealth, playerGold,
-                    playerHealthPotions, playerLevel, playerExp);
+            shopkeeperRoom(floorLevel, currentPosition, exitTile, player);
         }
-        navigateLevel(floorLevel, currentPosition, exitTile, playerName, playerHealth, playerGold, playerHealthPotions,
-                playerLevel, playerExp);
+        navigateLevel(floorLevel, currentPosition, exitTile, player);
     }
 
-    private void shopkeeperRoom(int floorLevel, int currentPosition, int exitTile, String playerName,
-                                int playerHealth, int playerGold, int playerHealthPotions,
-                                int playerLevel, int playerExp) {
+    private void shopkeeperRoom(int floorLevel, int currentPosition, int exitTile, Stats player) {
         System.out.println("Shopkeeper found!");
 
-        navigateLevel(floorLevel, currentPosition, exitTile, playerName, playerHealth, playerGold, playerHealthPotions,
-                playerLevel, playerExp);
+        navigateLevel(floorLevel, currentPosition, exitTile, player);
     }
 
-    private void lootRoom(int floorLevel, int currentPosition, int exitTile, String playerName,
-                          int playerHealth, int playerGold, int playerHealthPotions, int playerLevel, int playerExp) {
+    private void lootRoom(int floorLevel, int currentPosition, int exitTile, Stats player) {
         System.out.println("Loot room!");
 
-        navigateLevel(floorLevel, currentPosition, exitTile, playerName, playerHealth, playerGold, playerHealthPotions,
-                playerLevel, playerExp);
+        navigateLevel(floorLevel, currentPosition, exitTile, player);
     }
 
-    private void harderFight(int floorLevel, int currentPosition, int exitTile, String playerName, int playerHealth,
-                             int playerGold, int playerHealthPotions, int playerLevel, int playerExp) {
+    private void harderFight(int floorLevel, int currentPosition, int exitTile, Stats player) {
         GenerateMonster spider = new GenerateMonster((floorLevel * 25), (floorLevel * 12), "Spider");
         System.out.println("You come across a " + spider.getName() + "!");
-        handleFight(playerHealth, playerHealthPotions, spider.getHealth(), spider.getDamage(), spider.getName());
+        handleFight(player, spider.getHealth(), spider.getDamage(), spider.getName());
         System.out.println(spider.getName() + " defeated!");
-        playerExp += (floorLevel * 50);
-        playerGold += (floorLevel * 10);
+        player.setExp(player.getExp() + (floorLevel * 50));
+        player.setGold(player.getGold() + (floorLevel * 10));
         System.out.println("You gained " + (floorLevel * 50) + " exp!");
         System.out.println("You found " + (floorLevel * 10) + " gold!");
-        navigateLevel(floorLevel, currentPosition, exitTile, playerName, playerHealth, playerGold, playerHealthPotions,
-                playerLevel, playerExp);
+        navigateLevel(floorLevel, currentPosition, exitTile, player);
     }
 
-    private void easyFight(int floorLevel, int currentPosition, int exitTile, String playerName, int playerHealth,
-                           int playerGold, int playerHealthPotions, int playerLevel, int playerExp) {
+    private void easyFight(int floorLevel, int currentPosition, int exitTile, Stats player) {
         GenerateMonster slime = new GenerateMonster((floorLevel * 15), (floorLevel * 10), "Slime");
         System.out.println("You come across a " + slime.getName() + "!");
-        handleFight(playerHealth, playerHealthPotions, slime.getHealth(), slime.getDamage(), slime.getName());
+        handleFight(player, slime.getHealth(), slime.getDamage(), slime.getName());
         System.out.println(slime.getName() + " defeated!");
-        playerExp += (floorLevel * 25);
-        playerGold += (floorLevel * 5);
+        player.setExp(player.getExp() + (floorLevel * 50));
+        player.setGold(player.getGold() + (floorLevel * 10));
         System.out.println("You gained " + (floorLevel * 25) + " exp!");
         System.out.println("You found " + (floorLevel * 5) + " gold!");
-        navigateLevel(floorLevel, currentPosition, exitTile, playerName, playerHealth, playerGold, playerHealthPotions,
-                playerLevel, playerExp);
+        navigateLevel(floorLevel, currentPosition, exitTile, player);
     }
 
-    private void handleFight(int playerHealth, int playerHealthPotions,
-                             int monsterHealth, int slimeDamage, String monsterName) {
-        while (monsterHealth > 0 && playerHealth > 0) {
+    private void handleFight(Stats player, int monsterHealth, int slimeDamage, String monsterName) {
+        while (monsterHealth > 0 && player.getHealth() > 0) {
             Scanner fightScanner = new Scanner(System.in);
-            System.out.println("Your health = " + playerHealth);
+            System.out.println("Your health = " + player.getHealth());
             System.out.println(monsterName + "'s health = " + monsterHealth);
             System.out.println("What will you do?");
             System.out.println("1. Slash at the monster (Deals less damage, but is more accurate).");
@@ -204,7 +175,7 @@ public class PlayGame {
                     } else {
                         System.out.println("Missed!");
                     }
-                    playerHealth -= slimeDamage;
+                    player.setHealth(player.getHealth() - slimeDamage);
                     break;
                 case "2":
                     if (playerLevelChooser < 75) {
@@ -214,13 +185,13 @@ public class PlayGame {
                     } else {
                         System.out.println("Missed!");
                     }
-                    playerHealth -= slimeDamage;
+                    player.setHealth(player.getHealth() - slimeDamage);
                     break;
                 case "3":
-                    if (playerHealthPotions > 0) {
-                        playerHealthPotions--;
-                        playerHealth += 25;
-                        System.out.println("Health potion used! Your health is now " + playerHealth);
+                    if (player.getHealthPotions() > 0) {
+                        player.setHealthPotions(player.getHealthPotions() - 1);
+                        player.setHealth(player.getHealth() + 25);
+                        System.out.println("Health potion used! Your health is now " + player.getHealth());
                     } else {
                         System.out.println("No potions available!");
                     }
@@ -233,11 +204,10 @@ public class PlayGame {
         }
     }
 
-    private void runExitBattle(int floorLevel, String playerName, int playerHealth, int playerGold,
-                               int playerHealthPotions, int playerLevel, int playerExp) {
+    private void runExitBattle(int floorLevel, Stats player) {
         System.out.println("Exit battle run here");
         floorLevel++;
-        new PlayGame(floorLevel, playerName, playerHealth, playerGold, playerHealthPotions, playerLevel, playerExp);
+        new PlayGame(floorLevel, player);
     }
 
     private int setExitTile(int startingTile) {

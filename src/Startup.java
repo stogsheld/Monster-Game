@@ -7,8 +7,7 @@ public class Startup {
         Stats player = new Stats(enterName(), 50, 10, 3, 1, 0);
         System.out.println();
         System.out.println("Welcome " + player.getName() + ", taking you to the dungeon now...");
-        new PlayGame(, playerName, playerHealth, playerGold, playerHealthPotions, playerLevel, playerExp);
-
+        new PlayGame(1, player);
     }
 
     private static void displayTitleScreen() {
