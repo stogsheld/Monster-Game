@@ -21,7 +21,9 @@ public class Startup {
         Scanner scn = new Scanner(System.in);
         System.out.println();
         System.out.println("Welcome to Monster Game, adventurer! What is your name? ");
-        return scn.nextLine();
+        String name = scn.nextLine();
+        scn.close();
+        return name;
     }
 
 

@@ -98,6 +98,7 @@ public class PlayGame {
                     System.out.println();
                     System.out.println("Invalid option, please try again.");
             }
+            scn.close();
         }
         navigateLevel(floorLevel, currentPosition, exitTile, player);
     }
@@ -155,8 +156,8 @@ public class PlayGame {
     }
 
     private void handleFight(Stats player, int monsterHealth, int slimeDamage, String monsterName) {
+        Scanner fightScanner = new Scanner(System.in);
         while (monsterHealth > 0 && player.getHealth() > 0) {
-            Scanner fightScanner = new Scanner(System.in);
             System.out.println("Your health = " + player.getHealth());
             System.out.println(monsterName + "'s health = " + monsterHealth);
             System.out.println("What will you do?");
@@ -202,6 +203,7 @@ public class PlayGame {
 
             }
         }
+        fightScanner.close();
     }
 
     private void runExitBattle(int floorLevel, Stats player) {
